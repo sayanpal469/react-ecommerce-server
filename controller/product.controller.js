@@ -19,7 +19,9 @@ const fetchAllProducts = async (req, res) => {
 
     if (req.query.category) {
       query = query.find({ category: req.query.category });
-      totalProductsQuery = totalProductsQuery.find({ category: req.query.category });
+      totalProductsQuery = totalProductsQuery.find({
+        category: req.query.category,
+      });
     }
 
     if (req.query.brand) {
@@ -40,15 +42,46 @@ const fetchAllProducts = async (req, res) => {
     }
 
     const products = await query.exec();
-    res.set('X-Total-Count', totalDocs)
+    res.set("X-Total-Count", totalDocs);
     res.status(201).json(products);
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ error: "Failed to create product" });
+    res.status(400).json(error);
+  }
+};
+
+const fetchProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.status(200).json(product);
+  } catch (error) {
+    // console.error(error);
+    res.status(500).json(error.message);
+  }
+};
+
+const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.status(200).json(product);
+  } catch (error) {
+    // console.error(error);
+    res.status(500).json(error.message);
   }
 };
 
 module.exports = {
   createProduct,
   fetchAllProducts,
+  fetchProductById,
+  updateProduct,
 };

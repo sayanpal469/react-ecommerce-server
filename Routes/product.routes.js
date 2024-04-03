@@ -1,9 +1,16 @@
 const {
   createProduct,
   fetchAllProducts,
+  fetchProductById,
+  updateProduct,
 } = require("../controller/product.controller");
 
 const productRoutes = require("express").Router();
 
-productRoutes.route("/").post(createProduct).get(fetchAllProducts);
+productRoutes
+  .post(createProduct)
+  .get("/", fetchAllProducts)
+  .get("/:id", fetchProductById)
+  .patch("/:id", updateProduct);
+
 module.exports = productRoutes;
