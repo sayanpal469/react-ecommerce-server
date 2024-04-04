@@ -3,9 +3,9 @@ const { User } = require("../model/user.model");
 const createUser = async (req, res) => {
   try {
     const user = new User(req.body);
-    const savedUser = await user.save();
+    const doc = await user.save();
 
-    res.status(201).json(savedUser);
+    res.status(201).json({id: doc.id, role: doc.role});
   } catch (error) {
     // console.error(error);
     res
@@ -22,9 +22,7 @@ const loginUser = async (req, res) => {
     } else if (user.password === req.body.password) {
       res.status(201).json({
         id: user.id,
-        email: user.email,
-        name: user.name,
-        address: user.address,
+        role: user.role,
       });
     } else {
       res.status(401).json({ message: "Invalid credentials" });

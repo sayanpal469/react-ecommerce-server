@@ -1,4 +1,3 @@
-const Brand = require("../model/brand.model");
 const Cart = require("../model/cart.model");
 
 const addToCart = async (req, res) => {
@@ -15,7 +14,7 @@ const addToCart = async (req, res) => {
     console.error(error);
     res
       .status(400)
-      .json({ error: "Failed to create brand", details: error.message });
+      .json({ error: "Failed to create cart item", details: error.message });
   }
 };
 
@@ -44,7 +43,9 @@ const updateCart = async (req, res) => {
       return res.status(404).json({ message: "Cart item not found" });
     }
 
-    res.status(200).json(updatedItem);
+    const result = await updatedItem.populate("product")
+
+    res.status(200).json(result);
   } catch (error) {
     res
       .status(400)
