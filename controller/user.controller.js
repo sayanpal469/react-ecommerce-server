@@ -13,17 +13,22 @@ const fetchUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const user = await User.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const email = req.body.email;
+    const user = await User.findOneAndUpdate(
+      { email: email },
+      { password: req.body.password },
+      {
+        new: true,
+      }
+    );
+
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ status: false, message: "User not found" });
     }
-    res.status(200).json(user);
+    res.status(200).json({ status: true, user });
   } catch (error) {
-    // console.error(error);
-    res.status(500).json(error.message);
+    console.error(error);
+    res.status(500).json({ message: error.message });
   }
 };
 

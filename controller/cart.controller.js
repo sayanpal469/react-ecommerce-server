@@ -24,7 +24,6 @@ const fetchCartByUser = async (req, res) => {
     const cartItems = await Cart.find({ user: user })
       .populate("user")
       .populate("product")
-      .lean();
 
     res.status(200).json(cartItems);
   } catch (error) {
